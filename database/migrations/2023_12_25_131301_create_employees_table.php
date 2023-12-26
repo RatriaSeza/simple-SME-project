@@ -14,16 +14,19 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
+            $table->string('employee_id', 100)->unique();
             $table->string('first_name', 255);
             $table->string('last_name', 255);
-            $table->string('nick_name', 255);
+            $table->string('nick_name', 255)->nullable();
+            $table->date('birth_date');
+            $table->string('position', 255); // responsibility or functionality
             $table->enum('gender', Employee::GENDER);
             $table->string('education', 100);
             $table->string('id_number');
             $table->enum('marital_status', Employee::MARITAL_STATUS);
             $table->date('join_date');
-            $table->string('email')->unique();
-            $table->string('password');
+            // $table->string('email')->unique();
+            // $table->string('password');
             $table->timestamps();
         });
     }
