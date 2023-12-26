@@ -1,11 +1,20 @@
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./resources/**/*.blade.php",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
+import withMT from "@material-tailwind/html/utils/withMT";
 
+/** @type {import('tailwindcss').Config} */
+export default withMT({
+    content: ["./resources/**/*.blade.php"],
+    theme: {
+        extend: {
+            zIndex: {
+                "-1": "-1",
+            },
+            flexGrow: {
+                5: "5",
+            },
+            fontFamily: {
+                poppins: ["Poppins"],
+            },
+        },
+    },
+    plugins: [],
+});
