@@ -13,7 +13,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = Employee::all();
+        $employees = Employee::orderBy('first_name')->get();
 
         return view('employee.index', compact('employees'));
     }
@@ -46,23 +46,29 @@ class EmployeeController extends Controller
     {
         $employee = Employee::where('employee_id', $employee_id)->first();
 
-        dd($employee);
+        return view('employee.edit', compact('employee'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(EmployeeControllerRequest $request, Employee $employee)
     {
-        //
+        $validated = $request->validated();
+
+        $employee->update($validated);
+
+        return redirect(route('employees.index'))->with('status', 'Data employee ' . $employee->employee_id .' updated!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Employee $employee)
     {
-        //
+        $employee->delete();
+
+        return redirect(route('employees.index'))->with('status', 'Data employee ' . $employee->employee_id .' deleted!');
     }
 
     public function generate_id($join_date)

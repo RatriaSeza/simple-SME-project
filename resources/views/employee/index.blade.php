@@ -116,7 +116,7 @@
                                     {{ $employee->join_date }}
                                 </p>
                             </td>
-                            <td class="p-4 border-b border-blue-gray-50">
+                            <td class="p-4 border-b border-blue-gray-50 flex">
                                 <a href="{{ route('employees.edit', $employee->employee_id) }}"
                                     class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 hover:text-blue-500 active:bg-gray-900/20"
                                     type="button">
@@ -124,13 +124,17 @@
                                         <i class="fa-solid fa-pen"></i>
                                     </span>
                                 </a>
-                                <button
-                                    class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 hover:text-red-500 active:bg-gray-900/20"
-                                    type="button">
-                                    <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                                        <i class="fa-solid fa-eraser"></i>
-                                    </span>
-                                </button>
+                                <form action="{{ route('employees.destroy', $employee) }}" method="post">
+                                    @csrf
+                                    @method('delete')
+                                    <button
+                                        class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 hover:text-red-500 active:bg-gray-900/20"
+                                        type="submit">
+                                        <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                                            <i class="fa-solid fa-eraser"></i>
+                                        </span>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
