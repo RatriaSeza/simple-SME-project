@@ -11,9 +11,16 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $employees = Employee::orderBy('first_name')->get();
+        $query = Employee::query();
+
+        if (!empty($request->query())) {
+            $search = $request->query();
+            $query->where('employee_id', 'ilike', '%' . $search['search'] . '%');
+        }
+
+        $employees = $query->orderBy('first_name')->get();
 
         return view('employee.index', compact('employees'));
     }
@@ -24,6 +31,11 @@ class EmployeeController extends Controller
     public function create()
     {
         return view('employee.create');
+    }
+
+    public function show()
+    {
+
     }
 
     /**
