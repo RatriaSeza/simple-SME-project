@@ -24,5 +24,6 @@ Route::get('/admin', function () {
 });
 
 Route::resource('employees', EmployeeController::class);
+
 Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances');
 Route::get('/attendances/export', [AttendanceController::class, 'generate_excel'])->name('attendances.export');

@@ -73,59 +73,53 @@
                 </thead>
                 <tbody>
                     @foreach ($employees as $employee)
-                    <tr>
-                        <td class="p-4 border-b border-blue-gray-50">
-                            <div class="flex items-center gap-3">
+                        <tr>
+                            <td class="p-4 border-b border-blue-gray-50">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex flex-col">
+                                        <p
+                                            class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                            {{ $employee->full_name }}
+                                            {{ $employee->nick_name ? '(' . $employee->nick_name . ')' : '' }}
+                                            {!! $employee->gender == 'Male'
+                                                ? '<i class="text-blue-500 fa-solid fa-mars"></i>'
+                                                : '<i class="text-pink-500 fa-solid fa-venus"></i>' !!}
+                                        </p>
+                                        <p
+                                            class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
+                                            #{{ $employee->employee_id }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-4 border-b border-blue-gray-50">
                                 <div class="flex flex-col">
                                     <p
                                         class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                        {{ $employee->first_name . ' ' . $employee->last_name }} {{ $employee->nick_name ? '(' . $employee->nick_name . ')' : '' }}
-                                        {!! $employee->gender == 'Male' ? '<i class="text-blue-500 fa-solid fa-mars"></i>' : '<i class="text-pink-500 fa-solid fa-venus"></i>' !!}
-                                    </p>
-                                    <p
-                                        class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900 opacity-70">
-                                        #{{ $employee->employee_id }}
+                                        {{ $employee->position }}
                                     </p>
                                 </div>
-                            </div>
-                        </td>
-                        <td class="p-4 border-b border-blue-gray-50">
-                            <div class="flex flex-col">
+                            </td>
+                            <td class="p-4 border-b border-blue-gray-50">
                                 <p
-                                    class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                    {{ $employee->position }}
+                                    class="block font-sans text-sm antialiased font-normal text-center leading-normal text-blue-gray-900">
+                                    {{ $employee->total_working_days }}
                                 </p>
-                            </div>
-                        </td>
-                        <td class="p-4 border-b border-blue-gray-50">
-                            <p
-                                class="block font-sans text-sm antialiased font-normal text-center leading-normal text-blue-gray-900">
-                                {{ $employee->total_working_days }}
-                            </p>
-                        </td>
-                        <td class="p-4 border-b border-blue-gray-50">
-                            <p
-                                class="block font-sans text-sm antialiased font-normal text-center leading-normal text-blue-gray-900">
-                                {{ $employee->total_working_hours() }}
-                            </p>
-                        </td>
-                        <td class="p-4 border-b border-blue-gray-50 flex justify-center">
-                            <button
-                                class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 hover:text-blue-500 active:bg-gray-900/20"
-                                type="button">
-                                <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                                    <i class="fa-solid fa-pen"></i>
-                                </span>
-                            </button>
-                            <button
-                                class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 hover:text-red-500 active:bg-gray-900/20"
-                                type="button">
-                                <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                                    <i class="fa-solid fa-eraser"></i>
-                                </span>
-                            </button>
-                        </td>
-                    </tr>
+                            </td>
+                            <td class="p-4 border-b border-blue-gray-50">
+                                <p
+                                    class="block font-sans text-sm antialiased font-normal text-center leading-normal text-blue-gray-900">
+                                    {{ $employee->total_working_hours }}
+                                </p>
+                            </td>
+                            <td class="p-4 border-b border-blue-gray-50 flex justify-center">
+                                <button
+                                    class="select-none rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-semibold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                    type="button">
+                                    Detail
+                                </button>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
