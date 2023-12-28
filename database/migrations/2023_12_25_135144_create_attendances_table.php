@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
 
-            $table->bigInteger('employee_id');
-            $table->foreign('employee_id')->references('id')->on('employees');
+            $table->string('employee_id', 100);
+            $table->foreign('employee_id')->references('employee_id')->on('employees')->cascadeOnDelete();
 
             $table->date('attendance_date');
             $table->string('day');
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->time('time_out');
             $table->time('break_time_start');
             $table->time('break_time_end');
+            $table->time('working_hours');
 
             $table->timestamps();
         });
