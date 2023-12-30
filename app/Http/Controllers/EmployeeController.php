@@ -83,6 +83,9 @@ class EmployeeController extends Controller
         return redirect(route('employees.index'))->with('status', 'Data employee ' . $employee->employee_id .' deleted!');
     }
 
+    /**
+     * Generate employee id.
+     */
     public function generate_id($join_date)
     {
         return 'EMP' .  str_replace('-', '', $join_date) . rand(1000, 9999);

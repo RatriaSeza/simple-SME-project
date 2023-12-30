@@ -2,36 +2,33 @@
 
 namespace App\Exports;
 
-use App\Models\Attendance;
 use App\Models\Employee;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class AttendanceExport implements WithHeadings, FromQuery, WithMapping, WithStyles, ShouldAutoSize
+class AttendanceExport implements WithHeadings, FromArray, WithStyles, ShouldAutoSize
 {
     use Exportable;
 
-    public function query()
-    {
-        $employees = Employee::query()->with('attendances');
-        $employees->withCount('attendances as total_working_days');
+    protected $data;
 
-        return $employees;
+    public function __construct($data)
+    {
+        $this->data = $data;
     }
 
-    public function map($employee): array
+    public function array(): array
     {
-        return [
-            $employee->employee_id,
-            $employee->first_name . ' ' .$employee->last_name,
-            $employee->total_working_days,
-            $employee->total_working_hours(),
-        ];
+        return $this->data;
     }
 
     public function headings(): array
@@ -47,9 +44,17 @@ class AttendanceExport implements WithHeadings, FromQuery, WithMapping, WithStyl
     public function styles(Worksheet $sheet)
     {
         return [
-            // Style the first row as bold text.
-            1    => ['font' => ['bold' => true]],
+            1 => [
+                'font' => [
+                    'bold' => true
+                ],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => [
+                        'rgb' => 'FFFF00',
+                    ],
+                ],
+            ],
         ];
     }
-
 }

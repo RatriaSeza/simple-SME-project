@@ -19,10 +19,10 @@ return new class extends Migration
 
             $table->date('attendance_date');
             $table->string('day');
-            $table->time('time_in');
-            $table->time('time_out');
-            $table->time('break_time_start');
-            $table->time('break_time_end');
+            $table->time('time_in')->nullable();
+            $table->time('time_out')->nullable();
+            $table->time('break_time_start')->nullable();
+            $table->time('break_time_end')->nullable();
             $table->time('working_hours');
 
             $table->timestamps();
