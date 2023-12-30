@@ -16,8 +16,8 @@ class EmployeeController extends Controller
         $query = Employee::query();
 
         if (!empty($request->query())) {
-            $search = $request->query();
-            $query->where('employee_id', 'ilike', '%' . $search['search'] . '%');
+            $filter = $request->query();
+            $query->where('employee_id', 'ilike', '%' . $filter['search'] . '%');
         }
 
         $employees = $query->orderBy('first_name')->get();
