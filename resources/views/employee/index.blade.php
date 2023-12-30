@@ -1,19 +1,6 @@
 <x-layouts.app>
     @if (session('status'))
-    <div role="alert" class="relative mt-3 ml-3 flex max-w-full px-4 py-4 text-base text-white bg-gray-900 rounded-lg font-regular"
-        data-dismissible="alert">
-        <div class="mr-12 "><i class="fa-solid fa-circle-check mr-2"></i> {{ session('status') }}</div>
-        <button data-dismissible-target="alert"
-            class="!absolute  top-3 right-3 h-8 max-h-[32px] w-8 max-w-[32px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-white transition-all hover:bg-white/10 active:bg-white/30 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-            type="button">
-            <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    class="w-6 h-6" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </span>
-        </button>
-    </div>
+    <x-alert :message="session('status')"/>
     @endif
     <div class="relative flex flex-col h-full mt-3 ml-3 text-gray-700 bg-white shadow-md rounded-xl bg-clip-border">
         <div class="relative mx-4 mt-4 overflow-hidden text-gray-700 bg-white rounded-none bg-clip-border">
@@ -85,12 +72,12 @@
                 </thead>
                 <tbody>
                     @foreach ($employees as $employee)
-                        <tr>
+                        <tr class="@if($loop->even) bg-blue-gray-50/50  @endif">
                             <td class="p-4 border-b border-blue-gray-50">
                                 <div class="flex items-center gap-3">
                                     <div class="flex flex-col">
                                         <p
-                                            class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                                            class="block font-sans text-sm antialiased font-medium leading-normal text-blue-500">
                                             {{ $employee->first_name . ' ' . $employee->last_name }}
                                             {{ $employee->nick_name ? '(' . $employee->nick_name . ')' : '' }}
                                             {!! $employee->gender == 'Male'
@@ -115,10 +102,10 @@
                             <td class="p-4 border-b border-blue-gray-50">
                                 <p
                                     class="block font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                                    {{ $employee->join_date }}
+                                    {{ \Carbon\Carbon::parse($employee->join_date)->format('d F Y') }}
                                 </p>
                             </td>
-                            <td class="p-4 border-b border-blue-gray-50 flex justify-center">
+                            <td class="p-4 flex justify-center">
                                 <a href="{{ route('employees.edit', $employee->employee_id) }}"
                                     class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 hover:text-blue-500 active:bg-gray-900/20"
                                     type="button">
