@@ -23,7 +23,7 @@ return new class extends Migration
             $table->time('time_out');
             $table->time('break_time_start');
             $table->time('break_time_end');
-            $table->integer('working_hours');
+            $table->time('working_hours');
 
             $table->timestamps();
         });

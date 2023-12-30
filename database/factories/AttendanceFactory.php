@@ -18,7 +18,7 @@ class AttendanceFactory extends Factory
      */
     public function definition(): array
     {
-        $date = fake()->date();
+        $date = fake()->dateTimeThisYear()->format('Y-m-d');
 
         return [
             'employee_id' => Employee::get()->random()->employee_id,
@@ -28,7 +28,7 @@ class AttendanceFactory extends Factory
             'time_out' => fake()->dateTimeBetween('15:00:00', '18:00:00')->format('H:i:s'),
             'break_time_start' => fake()->dateTimeBetween('11:30:00', '12:30:00')->format('H:i:s'),
             'break_time_end' => fake()->dateTimeBetween('12:30:00', '13:00:00')->format('H:i:s'),
-            'working_hours' => rand(6,12),
+            'working_hours' => fake()->dateTimeBetween('07:00:00', '13:00:00')->format('H:i:s'),
         ];
     }
 }
