@@ -26,20 +26,20 @@ class AttendanceController extends Controller
 
         $filter = $request->query();
 
-        $employees = DB::table('employees')
-            ->leftJoin('attendances', 'employees.employee_id', '=', 'attendances.employee_id')
-            ->select(
-                'employees.employee_id',
-                'employees.nick_name',
-                'employees.position',
-                'employees.gender',
-                DB::raw("CONCAT(employees.first_name, ' ', employees.last_name) as full_name"),
-                DB::raw('COUNT(attendances.attendance_date) as total_working_days'),
-                DB::raw('SUM(attendances.working_hours) as total_working_hours')
-            )
-            ->whereRaw("EXTRACT(MONTH FROM attendances.attendance_date) = ? AND EXTRACT(YEAR FROM attendances.attendance_date) = ?", [$filter['month'] ?? $currentMonth, $filter['year'] ?? $currentYear])
-            ->groupBy('employees.employee_id', 'full_name', 'employees.position', 'employees.nick_name', 'employees.gender')
-            ->orderBy('full_name')
+        $queryMonth = $filter['month'] ?? $currentMonth;
+        $queryYear = $filter['year'] ?? $currentYear;
+
+        $employees = Employee::withCount(['attendances as total_working_days' => function ($query) use ($queryMonth, $queryYear) {
+            $query->where('working_hours', '<>', '00:00:00')
+                ->whereMonth('attendance_date', $queryMonth)
+                ->whereYear('attendance_date', $queryYear);
+            }])
+            ->withSum(['attendances' => function ($query) use ($queryMonth, $queryYear) {
+                $query->where('working_hours', '<>', '00:00:00')
+                    ->whereMonth('attendance_date', $queryMonth)
+                    ->whereYear('attendance_date', $queryYear);
+            }] , 'working_hours')
+            ->orderBy('first_name')
             ->get();
 
         $attendancesExport = $employees;
@@ -96,7 +96,12 @@ class AttendanceController extends Controller
 
         $validated['employee_id'] = $employee_id;
         $validated['day'] = Carbon::parse($validated['attendance_date'])->dayName;
-        $validated['working_hours'] = $this->getTotalWorkingHours($validated['time_in'], $validated['time_out'], $validated['break_time_start'], $validated['break_time_end']);
+
+        if ($request->leave) {
+            $validated['working_hours'] = '00:00:00';
+        } else {
+            $validated['working_hours'] = $this->getTotalWorkingHours($validated['time_in'], $validated['time_out'], $validated['break_time_start'], $validated['break_time_end']);
+        }
 
         $attendance = Attendance::create($validated);
 
@@ -124,30 +129,39 @@ class AttendanceController extends Controller
         $month = Carbon::createFromFormat('m', $request->input('export_month'))->format('F');;
         $year = $request->input('export_year');
 
-        $attendancesData = Arr::map($data, function ($item) {
-            return Arr::only($item,  ['employee_id', 'full_name', 'total_working_days', 'total_working_hours']);
+        // concat first_name and last_name into full_name
+        $getFullName = Arr::map($data, function ($item) {
+            $item['full_name'] = $item['first_name'] . ' ' . $item['last_name'];
+            unset($item['first_name']);
+            unset($item['last_name']);
+            return $item;
         });
 
-        return Excel::download(new AttendanceExport($attendancesData), 'Attendances of ' . $month . ' ' . $year . '.xlsx');
+        // reorder key
+        $result = Arr::map($getFullName, function ($item) {
+            return [
+                'employee_id' => $item['employee_id'],
+                'full_name' => $item['full_name'],
+                'total_working_days' => $item['total_working_days'],
+                'attendances_sum_working_hours' => $item['attendances_sum_working_hours'],
+            ];
+        });
+
+        return Excel::download(new AttendanceExport($result), 'Attendances of ' . $month . ' ' . $year . '.xlsx');
     }
 
     /**
      * Get total working hours of attendance data.
      */
-    // TODO: if one of parameter empty
     public function getTotalWorkingHours(string $time_in, string $time_out, string $break_time_start, string $break_time_end): string
     {
         $time_in = Carbon::parse($time_in);
         $time_out = Carbon::parse($time_out);
+        $break_time_start = Carbon::parse($break_time_start);
+        $break_time_end = Carbon::parse($break_time_end);
 
         $totalWorkingHours = $time_out->diffInMinutes($time_in);
-
-        if ($break_time_start && $break_time_end) {
-            $break_time_start = Carbon::parse($break_time_start);
-            $break_time_end = Carbon::parse($break_time_end);
-
-            $totalWorkingHours = $totalWorkingHours - $break_time_end->diffInMinutes($break_time_start);
-        }
+        $totalWorkingHours = $totalWorkingHours - $break_time_end->diffInMinutes($break_time_start);
 
         $totalWorkingMinutes = (string) $totalWorkingHours % 60;
         $totalWorkingHours = (string) floor($totalWorkingHours / 60);
