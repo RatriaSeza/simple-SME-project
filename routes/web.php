@@ -27,8 +27,13 @@ Route::resource('employees', EmployeeController::class);
 
 Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances');
 Route::get('/attendances/{employee}', [AttendanceController::class, 'detail'])->name('attendances.detail');
+
 Route::get('/attendances/{employee}/create', [AttendanceController::class, 'create'])->name('attendances.detail.create');
 Route::post('/attendances/{employee}', [AttendanceController::class, 'store'])->name('attendances.detail.store');
+
+Route::get('/attendances/{employee}/{attendance}/edit', [AttendanceController::class, 'edit'])->name('attendances.detail.edit');
+Route::put('/attendances/{employee}/{attendance}', [AttendanceController::class, 'update'])->name('attendances.detail.update');
+
 Route::delete('/attendances/{attendance}', [AttendanceController::class, 'destroy'])->name('attendances.detail.destroy');
 
 Route::post('/export', [AttendanceController::class, 'export'])->name('export');

@@ -48,7 +48,7 @@ class EmployeeController extends Controller
 
         $employee = Employee::create($validated);
 
-        return redirect(route('employees.index'))->with('status', 'Data employee ' . $employee->employee_id .' added!');
+        return redirect(route('employees.index'))->with('status', "Data employee $employee->employee_id added!");
     }
 
     /**
@@ -70,7 +70,7 @@ class EmployeeController extends Controller
 
         $employee->update($validated);
 
-        return redirect(route('employees.index'))->with('status', 'Data employee ' . $employee->employee_id .' updated!');
+        return redirect(route('employees.index'))->with('status', "Data employee $employee->employee_id updated!");
     }
 
     /**
@@ -80,7 +80,7 @@ class EmployeeController extends Controller
     {
         $employee->delete();
 
-        return redirect(route('employees.index'))->with('status', 'Data employee ' . $employee->employee_id .' deleted!');
+        return redirect(route('employees.index'))->with('status', "Data employee $employee->employee_id deleted!");
     }
 
     /**

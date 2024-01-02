@@ -201,7 +201,7 @@
                                 </div>
                             </td>
                             <td class="p-4 flex justify-center">
-                                <a href="{{ route('employees.edit', $attendance->id) }}"
+                                <a href="{{ route('attendances.detail.edit', ['employee' => $employee->employee_id, 'attendance' => $attendance->attendance_date]) }}"
                                     class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 hover:text-blue-500 active:bg-gray-900/20"
                                     type="button">
                                     <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">

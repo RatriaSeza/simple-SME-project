@@ -105,10 +105,47 @@ class AttendanceController extends Controller
 
         $attendance = Attendance::create($validated);
 
-        return redirect(route('attendances.detail', $employee_id))->with('status', 'Data attendance ' . $attendance->attendance_date . ' added!');
+        list($year, $month, $day) = explode('-', $attendance->attendance_date); // get year, month, day of attendance date
+
+        return redirect(route('attendances.detail', [$employee_id, 'year' => $year, 'month' => $month]))->with('status', "Data attendance $attendance->attendance_date added!");
     }
 
-    // TODO:UPDATE DATA
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $employee_id, string $attendance_date)
+    {
+        $attendance = Attendance::where('employee_id', $employee_id)
+            ->where('attendance_date', $attendance_date)
+            ->first();
+
+        return view('attendance.edit', compact('attendance'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(AttendanceControllerRequest $request, string $employee_id, Attendance $attendance)
+    {
+        $validated = $request->validated();
+        $validated['day'] = Carbon::parse($validated['attendance_date'])->dayName;
+
+        if ($request->leave) {
+            $validated['working_hours'] = '00:00:00';
+            $validated['time_in'] = null;
+            $validated['time_out'] = null;
+            $validated['break_time_start'] = null;
+            $validated['break_time_end'] = null;
+        } else {
+            $validated['working_hours'] = $this->getTotalWorkingHours($validated['time_in'], $validated['time_out'], $validated['break_time_start'], $validated['break_time_end']);
+        }
+
+        list($year, $month, $day) = explode('-', $attendance->attendance_date); // get year, month, day of attendance date
+
+        $attendance->update($validated);
+
+        return redirect(route('attendances.detail', [$employee_id, 'year' => $year, 'month' => $month]))->with('status', "Data employee $attendance->attendance_date updated!");
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -117,7 +154,7 @@ class AttendanceController extends Controller
     {
         $attendance->delete();
 
-        return redirect()->back()->with('status', 'Data ' . $attendance->attendance_date . ' deleted!');
+        return redirect()->back()->with('status', "Data $attendance->attendance_date deleted!");
     }
 
     /**
@@ -147,7 +184,7 @@ class AttendanceController extends Controller
             ];
         });
 
-        return Excel::download(new AttendanceExport($result), 'Attendances of ' . $month . ' ' . $year . '.xlsx');
+        return Excel::download(new AttendanceExport($result), "Attendances of $month $year.xlsx");
     }
 
     /**
