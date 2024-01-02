@@ -140,7 +140,7 @@ class AttendanceController extends Controller
             $validated['working_hours'] = $this->getTotalWorkingHours($validated['time_in'], $validated['time_out'], $validated['break_time_start'], $validated['break_time_end']);
         }
 
-        list($year, $month, $day) = explode('-', $attendance->attendance_date); // get year, month, day of attendance date
+        list($year, $month, $day) = explode('-', $validated['attendance_date']); // get year, month, day of attendance date
 
         $attendance->update($validated);
 
