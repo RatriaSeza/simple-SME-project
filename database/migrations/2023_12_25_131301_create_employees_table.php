@@ -25,8 +25,6 @@ return new class extends Migration
             $table->string('id_number');
             $table->enum('marital_status', Employee::MARITAL_STATUS);
             $table->date('join_date');
-            // $table->string('email')->unique();
-            // $table->string('password');
             $table->timestamps();
         });
     }
