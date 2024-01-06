@@ -24,7 +24,7 @@ class EmployeeControllerRequest extends FormRequest
         return [
             'first_name' => 'required|max:255|string',
             'last_name' => 'required|max:255|string',
-            'nick_name' => 'max:255|string',
+            'nick_name' => 'nullable|max:255|string',
             'birth_date' => 'required|date',
             'position' => 'required|max:255|string',
             'gender' => 'required|max:255|string',
